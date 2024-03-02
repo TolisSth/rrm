@@ -1,7 +1,6 @@
 // Author: Apostolos Chalis 2024 
 // Rust Remove is a rm clone written in Rust as a method to learn the language. 
 use std::fs; 
-use std::io; 
 use std::env; 
 use regex::Regex; 
 
