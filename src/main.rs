@@ -3,6 +3,7 @@
 use std::fs; 
 use std::env; 
 use regex::Regex; 
+use std::fs::metadata; 
 
 fn main() {
     let file_path_regex = Regex::new(r"^(\/?[a-zA-Z0-9_.-]+\/)*[a-zA-Z0-9_.-]+$").unwrap();
@@ -20,7 +21,14 @@ fn main() {
         println!("rrm [FILE PATH] or rrm [OPTION]\nOptions:\n-v displays version info.\n-h displays this message.")
     }
     else if file_path_regex.is_match(flag){
-        let _ = fs::remove_file(flag);
+        let dir_or_file = metadata(flag).unwrap(); 
+        
+        if dir_or_file.is_dir() == false{
+            let _ = fs::remove_file(flag);
+        }
+        else if dir_or_file.is_dir() == true{
+            let _ = fs::remove_dir_all(flag); 
+        }
     }
     else{
         println!("Error: Unsupported flag!");
