@@ -2,12 +2,10 @@
 // Rust Remove is a rm clone written in Rust as a method to learn the language. 
 use std::fs; 
 use std::env; 
-use regex::Regex; 
+use std::path::Path; 
 use std::fs::metadata; 
 
 fn main() {
-    let file_path_regex = Regex::new(r"^(\/?[a-zA-Z0-9_.-]+\/)*[a-zA-Z0-9_.-]+$").unwrap();
-
     // Building first party CLI argument parser. 
     let args: Vec<String> = env::args().collect();
     let flag = &args[1]; // supports one CLI argument right now 
@@ -20,17 +18,16 @@ fn main() {
     else if flag == "-h" {
         println!("rrm [FILE PATH] or rrm [OPTION]\nOptions:\n-v displays version info.\n-h displays this message.")
     }
-    else if file_path_regex.is_match(flag){
-        let dir_or_file = metadata(flag).unwrap(); 
-        
-        if dir_or_file.is_dir() == false{
-            let _ = fs::remove_file(flag);
-        }
-        else if dir_or_file.is_dir() == true{
-            let _ = fs::remove_dir_all(flag); 
-        }
-    }
     else{
-        println!("Error: Unsupported flag!");
+        if Path::new(flag).exists() == true{
+            let dir_or_file = metadata(flag).unwrap(); 
+            
+            if dir_or_file.is_dir() == false{
+                let _ = fs::remove_file(flag);
+            }
+            else if dir_or_file.is_dir() == true{
+                let _ = fs::remove_dir_all(flag); 
+            }
+        }
     }
 }
